@@ -24,6 +24,8 @@ class _NormalPlayerPageState extends State<NormalPlayerPage> {
         DeviceOrientation.portraitDown,
         DeviceOrientation.portraitUp
       ],
+      useRootNavigator: true,
+      fullScreenByDefault: true,
       controlsConfiguration: BetterPlayerControlsConfiguration(
         controlBarColor: Colors.black54,
         playerTheme: BetterPlayerTheme.cupertino,
@@ -35,6 +37,7 @@ class _NormalPlayerPageState extends State<NormalPlayerPage> {
     );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+
     super.initState();
   }
 
