@@ -15,6 +15,12 @@ class BetterPlayerControlsConfiguration {
   ///Color of icons
   final Color iconsColor;
 
+  ///Icon of lock
+  final IconData lock;
+
+  ///Icon of un lock
+  final IconData unLock;
+
   ///Icon of play
   final IconData playIcon;
 
@@ -165,6 +171,8 @@ class BetterPlayerControlsConfiguration {
     this.controlBarColor = Colors.black87,
     this.textColor = Colors.white,
     this.iconsColor = Colors.white,
+    this.lock = Icons.lock,
+    this.unLock = Icons.lock_open,
     this.playIcon = Icons.play_arrow_outlined,
     this.pauseIcon = Icons.pause_outlined,
     this.muteIcon = Icons.volume_up_outlined,
@@ -230,6 +238,8 @@ class BetterPlayerControlsConfiguration {
     return const BetterPlayerControlsConfiguration(
       fullscreenEnableIcon: CupertinoIcons.arrow_up_left_arrow_down_right,
       fullscreenDisableIcon: CupertinoIcons.arrow_down_right_arrow_up_left,
+      lock: CupertinoIcons.lock,
+      unLock: CupertinoIcons.lock_open,
       playIcon: CupertinoIcons.play_arrow_solid,
       pauseIcon: CupertinoIcons.pause_solid,
       skipBackIcon: CupertinoIcons.gobackward_15,

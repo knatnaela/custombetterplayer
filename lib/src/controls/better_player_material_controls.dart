@@ -39,6 +39,7 @@ class _BetterPlayerMaterialControlsState
   Timer? _initTimer;
   Timer? _showAfterExpandCollapseTimer;
   bool _displayTapped = false;
+  bool _displayLocked = false;
   bool _wasLoading = false;
   VideoPlayerController? _controller;
   BetterPlayerController? _betterPlayerController;
@@ -76,6 +77,7 @@ class _BetterPlayerMaterialControlsState
         if (BetterPlayerMultipleGestureDetector.of(context) != null) {
           BetterPlayerMultipleGestureDetector.of(context)!.onTap?.call();
         }
+
         controlsNotVisible
             ? cancelAndRestartTimer()
             : changePlayerControlsNotVisible(true);
@@ -96,18 +98,22 @@ class _BetterPlayerMaterialControlsState
         child: Stack(
           fit: StackFit.expand,
           children: [
-            if (_wasLoading)
-              Center(child: _buildLoadingWidget())
-            else
-              _buildHitArea(),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _buildTopBar(),
-            ),
+            _wasLoading
+                ? Center(child: _buildLoadingWidget())
+                : _displayLocked
+                    ? const SizedBox()
+                    : _buildHitArea(),
+            if (!_displayLocked)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _buildTopBar(),
+              ),
+            // if (!_displayLocked)
             Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomBar()),
             _buildNextVideoWidget(),
+            _buildLockButtonHitArea()
           ],
         ),
       ),
@@ -274,7 +280,7 @@ class _BetterPlayerMaterialControlsState
   }
 
   Widget _buildBottomBar() {
-    if (!betterPlayerController!.controlsEnabled) {
+    if (!betterPlayerController!.controlsEnabled || _displayLocked) {
       return const SizedBox();
     }
     return AnimatedOpacity(
@@ -739,6 +745,60 @@ class _BetterPlayerMaterialControlsState
     return CircularProgressIndicator(
       valueColor:
           AlwaysStoppedAnimation<Color>(_controlsConfiguration.loadingColor),
+    );
+  }
+
+  Widget _buildLockButton() {
+    if (!betterPlayerController!.controlsEnabled) {
+      return const SizedBox();
+    }
+
+    return Container(
+      color: _displayLocked ? _controlsConfiguration.controlBarColor : null,
+      width: double.infinity,
+      height: double.infinity,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                _displayLocked
+                    ? _controlsConfiguration.lock
+                    : _controlsConfiguration.unLock,
+                size: 28,
+                color: Colors.white,
+              ),
+              onPressed: () => {
+                setState(() {
+                  _displayLocked = !_displayLocked;
+                })
+              },
+            ),
+            if (_displayLocked)
+              Text(
+                'Tap to unlock',
+                style: TextStyle(color: Colors.white),
+              ),
+            const SizedBox(
+              height: 25,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildLockButtonHitArea() {
+    return Container(
+      child: Center(
+        child: AnimatedOpacity(
+          opacity: controlsNotVisible ? 0.0 : 1.0,
+          duration: _controlsConfiguration.controlsHideTime,
+          child: _buildLockButton(),
+        ),
+      ),
     );
   }
 }

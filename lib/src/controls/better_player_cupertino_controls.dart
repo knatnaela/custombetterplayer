@@ -38,6 +38,7 @@ class _BetterPlayerCupertinoControlsState
   Timer? _expandCollapseTimer;
   Timer? _initTimer;
   bool _wasLoading = false;
+  bool _displayLocked = false;
 
   VideoPlayerController? _controller;
   BetterPlayerController? _betterPlayerController;
@@ -84,7 +85,8 @@ class _BetterPlayerCupertinoControlsState
     final isFullScreen = _betterPlayerController?.isFullScreen == true;
 
     _wasLoading = isLoading(_latestValue);
-    final controlsColumn = Column(children: <Widget>[
+    final controlsColumn =
+        Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       _buildTopBar(
         backgroundColor,
         iconColor,
@@ -158,12 +160,63 @@ class _BetterPlayerCupertinoControlsState
     super.didChangeDependencies();
   }
 
+  Widget _buildLockButton(double barHeight, double buttonPadding,
+      Color backgroundColor, double iconSize) {
+    if (!betterPlayerController!.controlsEnabled) {
+      return const SizedBox();
+    }
+
+    return GestureDetector(
+      onTap: () => {
+        setState(() {
+          _displayLocked = !_displayLocked;
+        })
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          height: barHeight,
+          padding: EdgeInsets.symmetric(
+            horizontal: buttonPadding,
+          ),
+          decoration: BoxDecoration(color: backgroundColor),
+          child: Icon(
+            _displayLocked
+                ? _controlsConfiguration.lock
+                : _controlsConfiguration.unLock,
+            size: iconSize,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLockButtonHitArea(
+    Color backgroundColor,
+    Color iconColor,
+    double barHeight,
+    double iconSize,
+    double buttonPadding,
+  ) {
+    return Container(
+      child: Center(
+        child: AnimatedOpacity(
+          opacity: controlsNotVisible ? 0.0 : 1.0,
+          duration: _controlsConfiguration.controlsHideTime,
+          child: _buildLockButton(
+              barHeight, buttonPadding, backgroundColor, iconSize),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBottomBar(
     Color backgroundColor,
     Color iconColor,
     double barHeight,
   ) {
-    if (!betterPlayerController!.controlsEnabled) {
+    if (!betterPlayerController!.controlsEnabled || _displayLocked) {
       return const SizedBox();
     }
     return AnimatedOpacity(
@@ -490,55 +543,67 @@ class _BetterPlayerCupertinoControlsState
       ),
       child: Row(
         children: <Widget>[
-          if (_controlsConfiguration.enableFullscreen)
-            _buildExpandButton(
-              backgroundColor,
-              iconColor,
-              barHeight,
-              iconSize,
-              buttonPadding,
-            )
-          else
-            const SizedBox(),
-          const SizedBox(
-            width: 4,
+          _buildLockButtonHitArea(
+            backgroundColor,
+            iconColor,
+            barHeight,
+            iconSize,
+            buttonPadding,
           ),
-          if (_controlsConfiguration.enablePip)
-            _buildPipButton(
-              backgroundColor,
-              iconColor,
-              barHeight,
-              iconSize,
-              buttonPadding,
-            )
-          else
-            const SizedBox(),
-          const Spacer(),
-          if (_controlsConfiguration.enableMute)
-            _buildMuteButton(
-              _controller,
-              backgroundColor,
-              iconColor,
-              barHeight,
-              iconSize,
-              buttonPadding,
-            )
-          else
-            const SizedBox(),
-          const SizedBox(
-            width: 4,
-          ),
-          if (_controlsConfiguration.enableOverflowMenu)
-            _buildMoreButton(
-              _controller,
-              backgroundColor,
-              iconColor,
-              barHeight,
-              iconSize,
-              buttonPadding,
-            )
-          else
-            const SizedBox(),
+          if (!_displayLocked) ...[
+            const SizedBox(
+              width: 15,
+            ),
+            if (_controlsConfiguration.enableFullscreen)
+              _buildExpandButton(
+                backgroundColor,
+                iconColor,
+                barHeight,
+                iconSize,
+                buttonPadding,
+              )
+            else
+              const SizedBox(),
+            const SizedBox(
+              width: 4,
+            ),
+            if (_controlsConfiguration.enablePip)
+              _buildPipButton(
+                backgroundColor,
+                iconColor,
+                barHeight,
+                iconSize,
+                buttonPadding,
+              )
+            else
+              const SizedBox(),
+            const Spacer(),
+            if (_controlsConfiguration.enableMute)
+              _buildMuteButton(
+                _controller,
+                backgroundColor,
+                iconColor,
+                barHeight,
+                iconSize,
+                buttonPadding,
+              )
+            else
+              const SizedBox(),
+            const SizedBox(
+              width: 4,
+            ),
+            if (_controlsConfiguration.enableOverflowMenu)
+              _buildMoreButton(
+                _controller,
+                backgroundColor,
+                iconColor,
+                barHeight,
+                iconSize,
+                buttonPadding,
+              )
+            else
+              const SizedBox(),
+          ]
         ],
       ),
     );
