@@ -116,6 +116,9 @@ class BetterPlayerControlsConfiguration {
   ///Flag used to show/hide PiP mode
   final bool enablePip;
 
+  ///Flag used to show/hide back button
+  final bool enableBackButton;
+
   ///Flag used to enable/disable retry feature
   final bool enableRetry;
 
@@ -127,6 +130,12 @@ class BetterPlayerControlsConfiguration {
 
   ///Icon of the overflow menu
   final IconData overflowMenuIcon;
+
+  ///Icon of the back button
+  final IconData backIcon;
+
+  ///function of onTao back button
+  final Function()? onTapBackIcon;
 
   ///Icon of the PiP menu
   final IconData pipMenuIcon;
@@ -205,9 +214,12 @@ class BetterPlayerControlsConfiguration {
     this.enableSubtitles = true,
     this.enableQualities = true,
     this.enablePip = true,
+    this.enableBackButton = false,
     this.enableRetry = true,
     this.overflowMenuCustomItems = const [],
     this.overflowMenuIcon = Icons.more_vert_outlined,
+    this.backIcon = Icons.arrow_back,
+    this.onTapBackIcon,
     this.pipMenuIcon = Icons.picture_in_picture_outlined,
     this.playbackSpeedIcon = Icons.shutter_speed_outlined,
     this.qualitiesIcon = Icons.hd_outlined,

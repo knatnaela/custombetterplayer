@@ -28,6 +28,8 @@ class _NormalPlayerPageState extends State<NormalPlayerPage> {
       fullScreenByDefault: true,
       controlsConfiguration: BetterPlayerControlsConfiguration(
         controlBarColor: Colors.black54,
+        enablePip: true,
+        enableBackButton: true,
         playerTheme: BetterPlayerTheme.cupertino,
       ),
     );

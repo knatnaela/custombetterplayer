@@ -434,6 +434,42 @@ class _BetterPlayerCupertinoControlsState
     );
   }
 
+  GestureDetector _buildBackButton(
+    VideoPlayerController? controller,
+    Color backgroundColor,
+    Color iconColor,
+    double barHeight,
+    double iconSize,
+    double buttonPadding,
+  ) {
+    return GestureDetector(
+      onTap: _controlsConfiguration.onTapBackIcon,
+      child: AnimatedOpacity(
+        opacity: controlsNotVisible ? 0.0 : 1.0,
+        duration: _controlsConfiguration.controlsHideTime,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+            ),
+            child: Container(
+              height: barHeight,
+              padding: EdgeInsets.symmetric(
+                horizontal: buttonPadding,
+              ),
+              child: Icon(
+                _controlsConfiguration.backIcon,
+                color: iconColor,
+                size: iconSize,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   GestureDetector _buildPlayPause(
     VideoPlayerController controller,
     Color iconColor,
@@ -543,6 +579,19 @@ class _BetterPlayerCupertinoControlsState
       ),
       child: Row(
         children: <Widget>[
+          if (_controlsConfiguration.enableBackButton && !_displayLocked)
+            _buildBackButton(
+              _controller,
+              backgroundColor,
+              iconColor,
+              barHeight,
+              iconSize,
+              buttonPadding,
+            ),
+          if (_controlsConfiguration.enableBackButton && !_displayLocked)
+            const SizedBox(
+              width: 15,
+            ),
           _buildLockButtonHitArea(
             backgroundColor,
             iconColor,
@@ -554,16 +603,6 @@ class _BetterPlayerCupertinoControlsState
             const SizedBox(
               width: 15,
             ),
-            if (_controlsConfiguration.enableFullscreen)
-              _buildExpandButton(
-                backgroundColor,
-                iconColor,
-                barHeight,
-                iconSize,
-                buttonPadding,
-              )
-            else
-              const SizedBox(),
             const SizedBox(
               width: 4,
             ),

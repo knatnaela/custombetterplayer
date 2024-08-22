@@ -203,8 +203,10 @@ class _BetterPlayerMaterialControlsState
                 height: _controlsConfiguration.controlBarHeight,
                 width: double.infinity,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    if (_controlsConfiguration.enableBackButton)
+                      _buildBackButton(),
                     if (_controlsConfiguration.enablePip)
                       _buildPipButtonWrapperWidget(
                           controlsNotVisible, _onPlayerHide)
@@ -797,6 +799,20 @@ class _BetterPlayerMaterialControlsState
           opacity: controlsNotVisible ? 0.0 : 1.0,
           duration: _controlsConfiguration.controlsHideTime,
           child: _buildLockButton(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return BetterPlayerMaterialClickableWidget(
+      onTap:
+          _controlsConfiguration.onTapBackIcon ?? () => Navigator.pop(context),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Icon(
+          _controlsConfiguration.backIcon,
+          color: _controlsConfiguration.iconsColor,
         ),
       ),
     );
