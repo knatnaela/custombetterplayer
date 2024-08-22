@@ -248,6 +248,9 @@ class _BetterPlayerState extends State<BetterPlayer>
     }
 
     await Navigator.of(context, rootNavigator: true).push(route);
+    if (_betterPlayerConfiguration.fullScreenByDefault) {
+      Navigator.pop(context);
+    }
     _isFullScreen = false;
     widget.controller.exitFullScreen();
 
